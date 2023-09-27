@@ -10,7 +10,6 @@ const loadSchema = new mongoose.Schema({
 
       newstype:{
         type:String,
-        required:true
       }
 });
 
