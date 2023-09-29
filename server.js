@@ -85,6 +85,7 @@ try {
     // Assuming the list items are inside a parent element with the ID 'category'
     $('ul#cagetory li').each((index, element) => {
       const heading = $(element).find('h2 a').text().trim();
+      const time = $(element).find('span').text().trim();
       const paragraph = $(element).find('p').text().trim();
       const image = $(element).find('img').attr("data");
       const nextlink= $(element).find("a").attr("href")
@@ -93,7 +94,8 @@ try {
         heading,
         paragraph,
         image,
-        nextlink
+        nextlink,
+        time
       });
       
       
