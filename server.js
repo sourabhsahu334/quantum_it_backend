@@ -14,8 +14,8 @@ app.get("/",async(req,res)=>{
   res.json({success:true})
 })
 
-const array = [ "economy","stocks","mutual-funds","personal-finance","ipo","startups","technical-analysis","equity-research","commodity","currency"];
-const rates = [ "real-estate-property","gold-rates-today","silver-rates-today"];
+const array = [ "economy","stocks","mutual-funds","personal-finance","ipo","startups","technical-analysis","equity-research","commodity","currency","trends"];
+const rates = [ "real-estate-property","gold-rates-today","silver-rates-today",];
 
 async function fetchbydignlelink(link) {
   try {
@@ -65,7 +65,7 @@ try {
       await Singletypenews.deleteMany();
       const finalarray = []
      for ( const newstype of array){
-      const url = `https://www.moneycontrol.com/news/business/${newstype}`; // Replace with the URL you want to scrape
+      const url = newstype=="trends"?`https://www.moneycontrol.com/news/${newstype}`:`https://www.moneycontrol.com/news/business/${newstype}`; // Replace with the URL you want to scrape
       // const url = `https://www.moneycontrol.com/news/business/economy`;
       // Fetch the HTML content of the website
       const response = await axios.get(url);
