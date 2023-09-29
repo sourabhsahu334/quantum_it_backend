@@ -14,8 +14,9 @@ app.get("/",async(req,res)=>{
   res.json({success:true})
 })
 
-const array = [ "science","education","economy","stocks","mutual-funds","personal-finance","ipo","startups","technical-analysis","equity-research","commodity","currency"];
-const rates = [ "real-estate-property","gold-rates-today","silver-rates-today","health-and-fitness","trends","politics"];
+const array = [ "science","education","economy","stocks","mutual-funds","personal-finance","ipo","startups","technical-analysis","equity-research","commodity","currency","health-and-fitness","trends","politics"];
+const array2=["health-and-fitness","trends","politics"]
+const rates = [ "real-estate-property","gold-rates-today","silver-rates-today","technical-analysis"];
 const htmltags= [ "science","education"];
 
 
@@ -67,7 +68,7 @@ try {
       await Singletypenews.deleteMany();
       const finalarray = []
      for ( const newstype of array){
-      const url = htmltags.includes(newstype)?`https://www.moneycontrol.com/news/tags/${newstype}.html`:`https://www.moneycontrol.com/news/business/${newstype}`; // Replace with the URL you want to scrape
+      const url = htmltags.includes(newstype)?`https://www.moneycontrol.com/news/tags/${newstype}.html`:array2.includes(newstype)?`https://www.moneycontrol.com/news/${newstype}`:`https://www.moneycontrol.com/news/business/${newstype}`; // Replace with the URL you want to scrape
       // const url = `https://www.moneycontrol.com/news/business/economy`;
       // Fetch the HTML content of the website
       const response = await axios.get(url);
