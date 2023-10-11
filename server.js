@@ -29,7 +29,7 @@ const database = admin.database();
 const ref = database.ref('YourKhabri');
 const ref2 = database.ref('YourKhabrisingle');
 
-const array = [ "science","education","economy","stocks","mutual-funds","personal-finance","ipo","startups","technical-analysis","equity-research","commodity","currency","health-and-fitness","trends","politics"];
+const array = [ "economy","stocks","mutual-funds","personal-finance","ipo","startups","equity-research","commodity","currency","health-and-fitness","trends","politics"];
 const array2=["health-and-fitness","trends","politics"]
 const rates = [ "real-estate-property","gold-rates-today","silver-rates-today"];
 const htmltags= [ "science","education","technical-analysis"];
