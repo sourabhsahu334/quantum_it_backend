@@ -34,7 +34,7 @@ const array2=["health-and-fitness","trends","politics"]
 const rates = [ "real-estate-property","gold-rates-today","silver-rates-today"];
 const htmltags= [ "science","education","technical-analysis"];
 // Define an API route to trigger notifications
-app.post('/send-notification', async(req, res) => {
+app.get('/send-notification', async(req, res) => {
   const db = admin.database();
   let array = []
 const ref = db.ref('devicesid/'); // Replace with the actual path in your database
@@ -89,12 +89,14 @@ async function fetchbydignlelink(link) {
     const title= $(".article_title").text();
     const heading=$(".article_desc").text();
     const content = $(".content_wrapper p ").text();
-    const image =$(".article_image img").attr("src");
+    // const image =$(".article_image img").attr("src");/
+    let imagelink = $(".article_image img").attr("src");
+    imagelink = imagelink ? imagelink : "empty";
     obj = {
       title,
       heading,
       content,
-      image:image?image:"empty"
+      image:imagelink
     }
     return obj ;
   } catch (error) {
@@ -114,12 +116,191 @@ app.get("/getdata",async(req,res)=>{
   }
 });
 
+app.get("/sportsdata",async(req,res)=>{
+ try {
+  const firebasedataarray=[];
+  const firebasesignlenewsarray=[];
+  // const url = `https://www.moneycontrol.com/news/business/economy`;
+  // Fetch the HTML content of the website
+  const url = `https://www.indiatoday.in/sports`; // Replace with the URL you want to scrape
+// Replace with your HTML content
+  const html= await axios.get(url)
+  const $ = cheerio.load(html.data);
+ 
+  
+  // Find all articles with the specified class
+  const articles = $('article.B1S3_story__card__A_fhi');
+  
+  // Initialize empty arrays to store the results
+  const images = [];
+  const links = [];
+  const headings = [];
+  const data = []
+  
+  // Loop through the articles and extract the required information
+  articles.slice(0, 15).each((index, element) => {
+      const article = $(element);
+      const image = article.find('img.image_one_to_one');
+      const link = article.find('a[linktype="it"]');
+      const heading = article.find('h3');
+  
+      if (image) {
+          images.push(image.attr('src'));
+      }
+  
+      if (link) {
+          links.push(link.attr('href'));
+      }
+  
+      if (heading) {
+          headings.push(heading.text());
+      }
+  });
+  
+  // Print the results
+  for (let i = 0; i < headings.length; i++) {
+    const url2 = links[i];
+    const html= await axios.get(url2);
+    const $2 = cheerio.load(html.data);
+    const titile = $2("h1").text();
+    const heading = $2("h2").text();
+    const content= $2("p").text();
+    const image = $2('.topImage img').attr('src');
+    const time = $2(".strydate").text().trim().substring(8);
+    const id = uuidv4()
+    const obj2={
+      title:titile,
+      heading:heading,
+      content:content,
+      image:image,
+
+    }
+    const temp ={
+      data:obj2,
+      id:id,
+      newstype:"sports"
+    }
+    firebasesignlenewsarray.push(temp);
+
+      const obj = {
+        time:time,
+        image:images[i],
+        nextlink:links[i],
+        heading:headings[i],
+        id:id
+      }
+      data.push(obj)
+
+  }
+  const temp ={
+    data:data,
+    newstype:"sports",
+  }
+  firebasedataarray.push(temp)
+  
+
+  
+   res.json({firebasedataarray})
+
+   } catch (error) {
+  res.json({error:error.message})
+ }
+
+})
 
 app.get("/getalldata",async(req,res)=>{
  
 try {
   const firebasedataarray = [];
   const firebasesignlenewsarray=[];
+  try {
+  
+    // const url = `https://www.moneycontrol.com/news/business/economy`;
+    // Fetch the HTML content of the website
+    const url = `https://www.indiatoday.in/sports`; // Replace with the URL you want to scrape
+    // Replace with your HTML content
+      const html= await axios.get(url)
+      const $ = cheerio.load(html.data);
+     
+      
+      // Find all articles with the specified class
+      const articles = $('article.B1S3_story__card__A_fhi');
+      
+      // Initialize empty arrays to store the results
+      const images = [];
+      const links = [];
+      const headings = [];
+      const data = []
+      
+      // Loop through the articles and extract the required information
+      articles.slice(0, 15).each((index, element) => {
+          const article = $(element);
+          const image = article.find('img.image_one_to_one');
+          const link = article.find('a[linktype="it"]');
+          const heading = article.find('h3');
+      
+          if (image) {
+              images.push(image.attr('src'));
+          }
+      
+      
+          if (link) {
+              links.push(link.attr('href'));
+          }
+      
+          if (heading) {
+              headings.push(heading.text());
+          }
+      });
+      
+      // Print the results
+      for (let i = 0; i < headings.length; i++) {
+        const url2 = links[i];
+        const html= await axios.get(url2);
+        const $2 = cheerio.load(html.data);
+        const titile = $2("h1").text();
+        const heading = $2("h2").text();
+        const content= $2("p").text();
+        const image = $2('.topImage img').attr('src');
+        const time = $2(".strydate").text().trim().substring(8);
+        const id = uuidv4()
+        const obj2={
+          title:titile,
+          heading:heading,
+          content:content,
+          image:image?image:"empty",
+        }
+        const temp ={
+          data:obj2,
+          id:id,
+          newstype:"sports"
+        }
+        firebasesignlenewsarray.push(temp);
+    
+          const obj = {
+             item:{
+              image:image?image:"empty",
+              nextlink:links[i],
+              heading:headings[i],
+              time:time
+             },
+            id:id
+          }
+          data.push(obj)
+    
+      }
+      const temp ={
+        data:data,
+        newstype:"sports",
+      }
+      firebasedataarray.push(temp)
+      
+    
+     
+     } catch (error) {
+     console.log(error.message)
+   }
+  
       // await Allnews.deleteMany();
       // await Singletypenews.deleteMany();
       const finalarray = []
