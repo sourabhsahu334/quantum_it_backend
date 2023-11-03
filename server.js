@@ -1,6 +1,5 @@
 const express = require('express');
 const axios = require('axios');
-const { route } = require('./router');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -38,6 +37,27 @@ app.post('/register', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+app.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await Userit.findOne({ email });
+
+    if (!user) {
+      return res.status(401).json({ error: 'User not found' });
+    }
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ error: 'Invalid password' });
+    }
+    const token = user.token;
+
+    res.json({ token, success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 app.post("/check_authentication",async(req,res)=>{
 try {
