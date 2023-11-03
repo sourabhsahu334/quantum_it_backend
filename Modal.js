@@ -1,19 +1,28 @@
 const mongoose = require('mongoose');
 
-// Define the schema
-const loadSchema = new mongoose.Schema({
+const ituserSchema = new mongoose.Schema({
+  name:{
+    type:String,
+    require:true
+  },
+  dob:{
+    type:Date,
+    require:true
+  },
+  email:{
+    type:String,
+    require:true,
+    unique:true
+  },
 
-    data: {
-        type: Object, // Data will be stored as an object
-        required: true, // Data is required
-      },
-
-      newstype:{
-        type:String,
-      }
+  password:{
+    type:String,
+    require:true,
+  },
+  token:{
+    type:String,
+    require:true
+  }
 });
 
-const Allnews = mongoose.model('Allnews', loadSchema);
-
-
-module.exports = Allnews;
+module.exports = mongoose.model('Userit', ituserSchema);
